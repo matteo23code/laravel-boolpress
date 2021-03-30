@@ -13,6 +13,6 @@ class Author extends Model
 
     public function post()
     {
-        return $this->hasMany(AuthorDetail::class);
+        return $this->hasMany(Post::class);
     }
 }

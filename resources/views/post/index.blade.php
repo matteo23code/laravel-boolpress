@@ -14,11 +14,11 @@
         <tbody>
             @foreach ($posts as $post)
                 <tr>
-                    <th scope="row">{{ $post->id }}</th>
+                    <th scope="row"><a href="{{ route('comment.index', ['id' => $post->id]) }}">{{ $post->id }}</a>
+                    </th>
                     <td>{{ $post->title }}</td>
                     <td>{{ $post->body }}</td>
                     <td>{{ $post->author->name }} {{ $post->author->mail }}</td>
-
                 </tr>
             @endforeach
         </tbody>

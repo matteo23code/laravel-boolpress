@@ -3,6 +3,7 @@
 use App\Author;
 use App\AuthorDetail;
 use App\Post;
+use App\Comment;
 use Faker\Generator as Faker;
 
 use Illuminate\Database\Seeder;
@@ -32,10 +33,19 @@ class AuthorSeeder extends Seeder
 
             $author->detail()->save($authorDetail);
 
-            $post = new Post();
-            $post->title = $faker->text(20);
-            $post->body = $faker->text();
-            $author->post()->save($post);
+            for ($i = 0; $i < 10; $i++) {
+                $post = new Post();
+                $post->title = $faker->text(20);
+                $post->body = $faker->text();
+                $author->post()->save($post);
+            }
+            for ($i = 0; $i < 10; $i++) {
+                $comment = new Comment();
+                $comment->body = $faker->text();
+                $comment->author_id = rand(1, 10);
+                $comment->post_id = rand(1, 10);
+                $post->comments()->save($comment);
+            }
         }
     }
 }
