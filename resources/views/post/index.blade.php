@@ -9,6 +9,8 @@
                 <th scope="col">Title</th>
                 <th scope="col">Body</th>
                 <th scope="col">Author</th>
+                <th scope="col">Tags</th>
+
             </tr>
         </thead>
         <tbody>
@@ -19,6 +21,11 @@
                     <td>{{ $post->title }}</td>
                     <td>{{ $post->body }}</td>
                     <td>{{ $post->author->name }} {{ $post->author->mail }}</td>
+                    <td>
+                        @foreach ($post->tags as $tag)
+                            {{ $tag->name }},
+                        @endforeach
+                    </td>
                 </tr>
             @endforeach
         </tbody>

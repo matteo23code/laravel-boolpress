@@ -11,7 +11,7 @@ class Author extends Model
         return $this->hasOne(AuthorDetail::class);
     }
 
-    public function post()
+    public function posts()
     {
         return $this->hasMany(Post::class);
     }

@@ -33,18 +33,19 @@ class AuthorSeeder extends Seeder
 
             $author->detail()->save($authorDetail);
 
-            for ($i = 0; $i < 10; $i++) {
+            for ($y = 0; $y < 10; $y++) {
                 $post = new Post();
                 $post->title = $faker->text(20);
-                $post->body = $faker->text();
-                $author->post()->save($post);
-            }
-            for ($i = 0; $i < 10; $i++) {
-                $comment = new Comment();
-                $comment->body = $faker->text();
-                $comment->author_id = rand(1, 10);
-                $comment->post_id = rand(1, 10);
-                $post->comments()->save($comment);
+                $post->body = $faker->text(1000);
+                $author->posts()->save($post);
+
+                for ($i = 0; $i < 10; $i++) {
+                    $comment = new Comment();
+                    $comment->body = $faker->text();
+                    $comment->author_id = rand(1, 10);
+                    $comment->post_id = rand(1, 10);
+                    $post->comments()->save($comment);
+                }
             }
         }
     }

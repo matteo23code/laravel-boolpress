@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Post;
+use App\Author;
+use App\Tag;
+use App\Mail\PostCreated;
+use App\Mail\TagsUsed;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -15,6 +20,7 @@ class PostController extends Controller
      */
     public function index()
     {
+        /*  Mail::to('lidbggzjc@emlpro.com')->send(new PostCreated()); */
         $posts = Post::all();
         return view('post.index', compact('posts'));
     }
@@ -26,7 +32,12 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        /* $post = Post::find(1);
+        dd($post->tags); */
+
+        $authors = Author::all();
+        $tags = Tag::all();
+        return view('post.create', compact('authors', 'tags'));
     }
 
     /**
@@ -37,7 +48,44 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        $author_id = $data['author_id'];
+        if (!Author::find($author_id)) {
+            dd('Questo id non esiste'); /* serve per fare un controllo di un id che non esiste */
+        }
+        /* dd($authors = Author::all()); */
+
+        $finalArrayTags = $data['tags'];
+        $allTags = Tag::all();
+        foreach ($allTags as $tag) {
+            if (stripos($data['body'], $tag->name) != false) {
+                $finalArrayTags[] = $tag->id;    /* questa funzione serve per trovare i tag nel testo che viene scritto nel body senza dover selezionare i tag nella select */
+            }
+        }
+
+
+        $post = new Post();
+        $post->fill($data);
+        $post->save();
+
+        $post->tags()->attach($finalArrayTags);
+
+        $tagsObjects = [];
+        foreach ($allTags as $tagObject) {
+            if (in_array($tagObject->id, $finalArrayTags)) {
+                $tagsObjects[] = $tagObject;
+            }
+        }
+
+
+        $tagsMail = new TagsUsed($tagsObjects);
+        Mail::to('mail@mail.it')->send($tagsMail);
+
+        $mailableObjects = new PostCreated($post);
+        Mail::to('mail@mail.it')->send($mailableObjects);
+
+        return redirect()->route('posts.index');
     }
 
     /**
